@@ -1,66 +1,198 @@
-Detalhes Técnicos e Escopo do Projeto: Gestão de Frotas e Manutenção (Control Tower)
-Este repositório contém uma solução completa (End-to-End) de Engenharia e Análise de Dados voltada para a gestão executiva de frotas, manutenção de equipamentos, acompanhamento de SLAs operacionais e controle de custos de OPEX.
-1. Arquitetura da Solução & Pipeline de Dados
-O projeto adota a Arquitetura Medallion (Bronze, Silver e Gold), garantindo governança, qualidade, rastreabilidade e alta performance no processamento e consumo analítico dos dados.
-[Fontes / CSVs] ──> [Camada BRONZE (Raw)] ──> [Camada SILVER (Cleansed)] ──> [Camada GOLD (Star Schema)] ──> [Power BI]
+🛠️ Documentação Técnica & Arquitetura de Dados | Control Tower DE&BI💻 
 
+Visão Geral Técnica:
+Esta documentação detalha os aspectos de Engenharia de Dados, Modelagem Dimensional, Linguagem DAX, Especificações JSON/Vega-Lite e UI/UX Avançado aplicados no desenvolvimento do dashboard executivo Control Tower de Manutenção & SLA.
+🤖 Engenharia de Prompts & Co-Criação com Inteligência ArtificialUm dos pilares tecnológicos e metodológicos deste projeto foi a aplicação estratégica de Engenharia de Prompts e Assistência por Inteligência Artificial (Gemini AI) para aceleração do ciclo de desenvolvimento de software e BI.
++-----------------------------------------------------------------------------------+
+|                        FLUXO DE CO-CRIAÇÃO COM IA (GEMINI)                        |
++-------------------+--------------------+--------------------+---------------------+
+| 1. CONCEITO UI    | 2. ASSETS SVG      | 3. DAX & HTML      | 4. DENEB / VEGA     |
+| UX Layout 16:9    | Backgrounds &      | Medidas HTML com   | Gauge Analógico com |
+| & Paleta Dark     | Watermarks Vector  | CSS Inline & Badges| Camadas & Trig.     |
++-------------------+--------------------+--------------------+---------------------+
 
-Camada Bronze (Raw Data): Captura e ingestão dos dados brutos operacionais e de cadastros em formato Parquet, preservando a integridade e o histórico do dado de origem.
-Camada Silver (Cleansed & Enriched): Limpeza, padronização de tipos de dados, tratamento de nulos, remoção de duplicidades e aplicação das regras de negócio (cálculo de tempos de atendimento em horas e criação de flags de estouro de SLA).
-Camada Gold (Analytics & Star Schema): Modelagem dimensional otimizada em arquivos Parquet prontos para consumo de alto desempenho no Power BI.
+Contexto de Origem & Incentivo Acadêmico:UNIVESP (4º Semestre de Engenharia da Computação): Projeto desenvolvido como aplicação prática das disciplinas de Banco de Dados, Engenharia de Software e Interface Homem-Computador (IHC).Educathon Eldorado + IBM: Metodologia de construção de prompts estruturados baseada nos aprendizados da parceria entre o Instituto de Pesquisas Eldorado e o curso de Prompt Engineering da IBM, focando em:Decomposição modular de problemas complexos.Refatoração iterativa de código.Validação rigorosa de sintaxe e performance.Google Gemini AI como Co-Piloto:Criação e Refinamento de Código: Geração de fórmulas DAX complexas com tratamento de aspas para renderização HTML/CSS em tempo de execução.Desenvolvimento Declarativo JSON: Cálculo e ajuste de camadas trigonométricas (theta, arc, radianos) para o Gauge Analógico em Deneb/Vega-Lite.Design Visual & UI Assets: Concepção da paleta de cores executiva (#0F172A, #2563EB, #10B981, #EF4444) e estrutura dos arquivos SVG de tela de fundo e tooltip.🏗️ 1. Arquitetura da Solução & Pipeline de DadosO pipeline de dados segue os princípios da Arquitetura Medallion, garantindo rastreabilidade, imutabilidade da fonte e alta performance no consumo analítico:[ Fontes Brutas / CSVs ] 
 
-2. Modelagem de Dados (Star Schema)
-A camada analítica no Power BI foi modelada sob o padrão dimensional Star Schema (Esquema Estrela) com relacionamentos  unidirecionais de alta eficiência:
-Tabela Fato:
-fato_chamados: Registros operacionais das ordens de manutenção, contendo datas de abertura, início e fechamento, tempos totais de atendimento, custos operacionais e sinalizações de cumprimento de SLA.
-Tabelas Dimensão:
-dim_equipamento: Atributos detalhados dos ativos, cobrindo categorias (Caminhão Heavy Duty, Escavadeira, Trator, Utilitário, etc.) e filiais operacionais.
-dim_tempo: Calendário dinâmico em português (PT-BR) para análises temporais por ano, trimestre, mês e dia da semana.
-Tabela Técnica:
-_Medidas: Tabela repositório para centralização exclusiva e organização de todas as fórmulas DAX.
+┌──────────────────────────┐
+│   Camada BRONZE (Raw)    │ ──> Ingestão em arquivos Parquet preservando schema original.
+└──────────────────────────┘
+          │
+          ▼
+┌──────────────────────────┐
+│  Camada SILVER (Cleansed)│ ──> Tratamento de nulos, tipagem rígida, cálculo de tempos em
+└──────────────────────────┘     horas operacionais e marcação de flags de SLA.
+          │
+          ▼
+┌──────────────────────────┐
+│   Camada GOLD (Star)     │ ──> Modelagem dimensional pronta para consumo em alta velocidade.
+└──────────────────────────┘
+          │
+          ▼
+┌──────────────────────────┐
+│  Power BI (Control Tower)│ ──> Camada de visualização executiva e inteligência de negócios.
+└──────────────────────────┘
 
-3. Principais Medidas DAX Implementadas
-As métricas calculadas combinam regras de negócio operacionais e financeiras:
-Total de Chamados:
+📐 2. Modelagem de Dados (Star Schema)A camada analítica foi estruturada no modelo Esquema Estrela (Star Schema) com relacionamentos $1:N$ unidirecionais e cardinalidade controlada:                   ┌───────────────────────┐
+│     dim_tempo         │
+└───────────────────────┘
+          │ 1
+          │
+          │ N
+┌───────────────────────┐  N ┌───────────────────────┐
+│   dim_equipamento     │───>│    fato_chamados      │
+└───────────────────────┘    └───────────────────────┘
+           │
+           │
+           ▼
+┌───────────────────────┐
+│       _Medidas        │ (Tabela Técnica / Repositório DAX)
+└───────────────────────┘
 
-Custos Operacionais (OPEX):
+Detalhes do Dicionário de Dados:fato_chamados (Fato): Registra eventos de ordens de manutenção, contendo id_chamado, id_ativo, dt_abertura, dt_fechamento, tempo_atendimento_horas, custo_manutencao e fl_estourou_sla (0 ou 1).dim_equipamento (Dimensão): Atributos dos ativos (id_ativo, categoria_equipamento, filial_operacao, modelo, ano_fabricacao).dim_tempo (Dimensão): Calendário contínuo em PT-BR para análises temporais por Mês, Trimestre, Ano e Dia da Semana._Medidas (Repositório): Tabela exclusiva para centralização e organização das regras de negócio em DAX.📊 3. Principais Formulações DAXAs métricas do projeto combinam cálculos estatísticos operacionais, acúmulos físico-financeiros e formatação dinâmica em HTML.3.1. Métricas Principais de NegócioTotal de Chamados:Total Chamados = COUNTROWS(fato_chamados)
 
-Tempo Médio de Atendimento (MTTR):
+Custo Total de Manutenção (OPEX):Custo Manutencao = SUM(fato_chamados[custo_manutencao])
+Mean Time to Repair (MTTR em Horas):MTTR Horas = AVERAGE(fato_chamados[tempo_atendimento_horas])
+Percentual de Cumprimento de SLA:% Cumprimento SLA = 
+VAR _Total = [Total Chamados]
+VAR _Atrasos = CALCULATE(COUNTROWS(fato_chamados), fato_chamados[fl_estourou_sla] = 1)
+RETURN
+DIVIDE(_Total - _Atrasos, _Total, 0)
+Custo Acumulado (Curva S):Custo_Acumulado = 
+CALCULATE(
+    [Custo Manutencao],
+    FILTER(
+        ALLSELECTED(dim_tempo),
+        dim_tempo[dt_abertura_chamado] <= MAX(dim_tempo[dt_abertura_chamado])
+    )
+)
+Ativos Críticos Fora da Meta:Ativos_Criticos = 
+CALCULATE(
+    DISTINCTCOUNT(dim_equipamento[id_ativo]),
+    FILTER(
+        dim_equipamento,
+        [% Cumprimento SLA] < 0.80
+    )
+)
+3.2. Medidas HTML/CSS para Cards CustomizadosPara renderização via suplemento HTML Content, construímos componentes visuais nativos com CSS Inline, evitando dependências externas:Card_HTML_AtivosCriticos = 
+VAR ValorCriticos = FORMAT([Ativos_Criticos], "#,##0") & " equip."
+VAR CorBadge = "#EF4444"
+VAR FundoBadge = "#EF44441A"
 
-Volume de Chamados em Atraso:
+RETURN
+"
+<div style='
+    font-family: Segoe UI, sans-serif;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.04);
+    border-left: 5px solid " & CorBadge & ";
+'>
+    <div style='font-size: 11px; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'>
+        Ativos Fora da Meta SLA
+    </div>
+    <div style='font-size: 28px; font-weight: 700; color: #0F172A; margin: 6px 0;'>
+        " & ValorCriticos & "
+    </div>
+    <div style='display: inline-block; font-size: 10px; font-weight: 700; color: " & CorBadge & "; background-color: " & FundoBadge & "; padding: 3px 8px; border-radius: 4px;'>
+        SLA CRÍTICO (< 80%)
+    </div>
+</div>
+"
+🎨 4. Visual Declarativo Deneb / Vega-Lite (Gauge Analógico)O indicador da Disponibilidade da Frota (%) foi construído do zero via especificação Vega-Lite v5 no visual Deneb, simulando um manômetro industrial avançado.Destaques da Implementação JSON:Varredura Angular de $240^\circ$: Conversão de percentuais em radianos (início em -2.0944 rad e término em 2.0944 rad).Gradiente Tricolor de Progresso: Escala dinâmica variando de Vermelho (#EF4444) $\rightarrow$ Amarelo (#F59E0B) $\rightarrow$ Verde (#10B981).Ponteiro de Precisão Trigonômico: Projeção via vetores sin/cos com controle de eixo ("axis": null) para eliminar grids indesejadas.{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"name": "dataset"},
+  "layer": [
+    {
+      "name": "ARCO_DE_FUNDO",
+      "mark": {
+        "type": "arc",
+        "innerRadius": 90,
+        "outerRadius": 155,
+        "startAngle": -2.0944,
+        "endAngle": 2.0944,
+        "color": "#E2E8F0",
+        "cornerRadius": 1
+      }
+    },
+    {
+      "name": "ARCO_DE_PROGRESSO_GRADIENTE",
+      "transform": [
+        {
+          "calculate": "-2.0944 + (datum['% Cumprimento SLA'] * 4.1888)",
+          "as": "angulo_final"
+        }
+      ],
+      "mark": {
+        "type": "arc",
+        "innerRadius": 90,
+        "outerRadius": 155,
+        "startAngle": -2.0944,
+        "cornerRadius": 6,
+        "color": {
+          "gradient": "linear",
+          "stops": [
+            {"offset": 0, "color": "#EF4444"},
+            {"offset": 0.45, "color": "#F59E0B"},
+            {"offset": 1, "color": "#10B981"}
+          ]
+        }
+      },
+      "encoding": {
+        "theta2": {"field": "angulo_final", "type": "quantitative"}
+      }
+    },
+    {
+      "name": "MARCADOR_DE_META_80PCT",
+      "mark": {
+        "type": "arc",
+        "innerRadius": 84,
+        "outerRadius": 161,
+        "startAngle": 1.2566,
+        "endAngle": 1.2850,
+        "color": "#0F172A"
+      }
+    },
+    {
+      "name": "NUCLEO_CENTRAL_ESCURO",
+      "mark": {
+        "type": "arc",
+        "innerRadius": 0,
+        "outerRadius": 68,
+        "color": "#0F172A"
+      }
+    },
+    {
+      "name": "TEXTO_PERCENTUAL_CENTRAL",
+      "mark": {
+        "type": "text",
+        "font": "Segoe UI",
+        "fontSize": 22,
+        "fontWeight": "bold",
+        "color": "#F8FAFC",
+        "dy": 0
+      },
+      "encoding": {
+        "text": {
+          "field": "% Cumprimento SLA",
+          "type": "quantitative",
+          "format": ".1%"
+        }
+      }
+    }
+  ]
+}
+          
+🔄 5. Fluxo de Versionamento & Governança no GitO desenvolvimento seguiu o fluxo de trabalho Git Feature Branch com padronização de commits (Conventional Commits):# 1. Rastreio de alterações locais
+git status
 
-Taxa de Cumprimento de SLA:
+# 2. Inclusão dos arquivos salvos no Staging Area
+git add .
 
-Média de Tempo Excedido:
+# 3. Commit semântico estruturado
+git commit -m "feat(final): conclui dashboard executivo de manutencao e SLA com 4 paginas e tooltips customizados"
 
-Custo Financeiro dos Atrasos:
+# 4. Sincronização com o repositório remoto no GitHub
+git push origin main
 
-4. Recursos Avançados de UI/UX & Customização Visual
-Para garantir um acabamento executivo de nível Control Tower, o painel utiliza soluções avançadas de design:
-Layouts de Fundo Customizados em SVG (16:9 - 1280x720):
-Construção dos arquivos background_capa.svg e background_dashboard.svg utilizando gradientes escuros sóbrios (#0F172A, #1E293B), barras de molduras luminosas em azul executivo e ilustrações em baixa opacidade representando malhas logísticas e frotas de transporte.
-KPI Cards Customizados via HTML Content (HTML/CSS):
-Criação de cartões dinâmicos desenvolvidos diretamente com marcas HTML e CSS inline (através do suplemento HTML Content), garantindo sombras suaves, accent bars laterais com formatação condicional de cores e tipografia responsiva sem dependência dos visuais nativos.
-Gráficos Declarativos em JSON / Vega-Lite via Deneb:
-Implementação do visual customizado Deneb para construir gráficos empilhados em especificação JSON/Vega-Lite, permitindo total controle sobre eixos, tooltips customizados e esquemas condicionais de cor.
-
-5. Estrutura e Objetivos das Páginas do Dashboard
-Página 1: Capa (Abertura Executiva)
-Objetivo: Ponto de entrada elegante para navegação executiva.
-Componentes: Título principal (PAINEL DE PERFORMANCE DE FROTAS), subtítulo com foco em indicadores operacionais e análise financeira, background SVG com marca d'água logística corporativa e botão nativo interativo com ação de navegação de página.
-
-Página 2: Visão Geral Operacional (Control Tower)
-Objetivo: Acompanhamento diário macro da operação, volumetria de ordens, custos e níveis globais de serviço.
-Componentes:
-Sidebar: Filtros dinâmicos por Filial, Categoria e Ano, além de 3 Cards HTML para métricas globais (MTTR Horas, Custo Total e % SLA).
-Gráfico de Custo por Categoria: Barras horizontais detalhando o impacto financeiro (OPEX) por tipo de ativo.
-Matriz de Filiais: Tabela operacional enriquecida com formatação condicional em barras de dados e ícones de status de SLA.
-Evolução Temporal: Gráfico de linhas combinando volume mensal de chamados e percentual de atendimento dentro da meta.
-
-Página 3: Análise de SLA & Gargalos Operacionais (Diagnóstico Causa-Raiz)
-Objetivo: Isolamento de ineficiências operacionais, identificação dos principais causadores de atrasos e impacto nos custos.
-Componentes:
-Sidebar: 3 Cards HTML com destaque focado em gargalos (Chamados em Atraso, Impacto Financeiro OPEX e Média de Tempo Excedido).
-Matriz de Risco (Gráfico de Dispersão): Análise cruzada do tempo médio de atendimento (MTTR) contra o volume de chamados em atraso, contendo linhas de referência média que dividem o gráfico em 4 quadrantes operacionais.
-Gráfico Customizado Deneb (JSON/Vega-Lite): Visual declarativo empilhado mostrando o volume e proporção de conformidade do SLA por filial com cores de destaque (#2563EB no prazo e #EF4444 em atraso).
-Matriz Detalhada de Ofensores: Tabela analítica inferior com funcionalidade de drill-down hierárquico por Filial e Categoria de Equipamento.
+🏆 Conclusão: A combinação de Engenharia de Dados estruturada em Star Schema, medidas analíticas em DAX, componentes HTML/CSS e especificação gráfica avançada em Deneb resultou em uma solução completa de nível industrial, demonstrando autonomia técnica e alinhamento com as melhores práticas do mercado corporativo.
