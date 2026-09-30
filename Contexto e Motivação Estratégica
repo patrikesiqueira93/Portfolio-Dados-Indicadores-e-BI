@@ -1,0 +1,88 @@
+# 🚀 Control Tower de Manutenção & SLA | Case de Engenharia de Dados & BI
+
+![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-10B981?style=for-the-badge)
+![Power BI](https://img.shields.io/badge/Power_BI-Executive_Dashboard-2563EB?style=for-the-badge&logo=powerbi)
+![Engenharia de Dados](https://img.shields.io/badge/Focus-Data_Engineering_&_Analytics-0F172A?style=for-the-badge)
+
+---
+
+## 📌 Contexto & Motivação Estratégica
+
+Este projeto foi concebido para atuar como uma **Control Tower (Torre de Controle)** executiva, focada na gestão estratégica de ativos operacionais, desempenho de manutenção e conformidade de SLAs. 
+
+A motivação central deste desenvolvimento foi **consolidar e colocar em prática a sinergia entre três pilares fundamentais da minha trajetória**:
+
+1. **Atuação Prática na Petrobras:** Aplicação direta do know-how adquirido em suporte operacional e análise de dados no setor offshore/industrial na Bacia de Campos, traduzindo desafios reais de campo em métricas de alto impacto para tomada de decisão.
+2. **Formação em Engenharia da Computação (UNIVESP):** Aplicação de rigor analítico, estruturação de dados, lógica de modelagem e visão sistêmica no ciclo de vida da informação.
+3. **Especializações e Certificações Continuas:** Implementação de boas práticas de UI/UX corporativo minimalista, engenharia de métricas complexas em DAX e visualizações customizadas avançadas.
+
+---
+
+## 🎯 Escopo do Projeto & Proposta de Valor
+
+O objetivo principal foi substituir visuais operacionais fragmentados por uma solução única de **Business Intelligence de Nível Executivo**, permitindo rastreabilidade ponta a ponta: desde a visão macro diretiva até o diagnóstico detalhado de falhas por ativo individual.
+
+### Principais Objetivos Alcançados:
+* **Padronização Visual Corporativa:** Layout minimalista baseado na paleta *Dark Slate & Corporate Blue* (`#0F172A`, `#F8FAFC`, `#2563EB`), focado em reduzir a fadiga cognitiva dos tomadores de decisão.
+* **Métricas de Alta Precisão:** Implementação de governança rígida sobre indicadores essenciais como **MTTR (Mean Time to Repair)**, **MTBF (Mean Time Between Failures)**, **Taxa de Cumprimento de SLA** e **Curva S de Custos**.
+* **Interatividade Avançada:** Navegação fluida via bookmarks, sidebars dinâmicas e **Tooltips Customizados em nível de ativo**.
+
+---
+
+## 🖥️ Arquitetura do Relatório (Página a Página)
+
+O dashboard é composto por **4 páginas principais** e **1 página oculta de suporte analítico**, desenhadas em uma jornada lógica de exploração de dados:
+
+---
+
+### 🟢 Página 1: Capa (Landing Page)
+* **Proposta:** Apresentação institucional e porta de entrada para os executivos.
+* **Estrutura:** Design minimalista com atalhos diretos para as telas analíticas, contextualização do escopo do relatório e identificação da versão do projeto.
+
+---
+
+### 🔵 Página 2: Visão Geral de Operações & Manutenção
+* **Proposta:** Oferecer o panorama "Macro" do estado da frota e do volume de chamados.
+* **Componentes:**
+  * **Sidebar Executiva:** Filtros globais e métricas consolidadas em Cards HTML padronizados com bordas indicativas de status.
+  * **Painel de Chamados:** Distribuição de OS (Ordens de Serviço) por status, tipo de manutenção (Preventiva vs. Corretiva) e filiais de operação.
+
+---
+
+### 🟡 Página 3: Análise Fina de SLA & Gargalos Operacionais
+* **Proposta:** Identificar gargalos de atendimento e desvios de tempo entre abertura e conclusão de chamados.
+* **Componentes:**
+  * **Matriz de Performance por Unidade:** Rastreio de volume vs. tempo de atendimento.
+  * **Detalhamento de MTTR/MTBF:** Decomposição do tempo médio de reparo para isolar os gargalos operacionais que afetam a meta corporativa de SLA.
+
+---
+
+### 🔴 Página 4: Planejamento de Manutenção & Saúde de Ativos
+* **Proposta:** Monitoramento de saúde individualizada de frota e controle financeiro.
+* **Componentes:**
+  * **Gauge Analógico Customizado (Deneb / Vega-Lite):** Medidor estilo manômetro industrial com gradiente tricolor dinâmico e agulha de precisão para disponibilidade geral da frota.
+  * **Curva S Físico-Financeira:** Gráfico acumulado para controle orçamentário (OPEX) mês a mês.
+  * **Matriz de Saúde dos Ativos:** Tabela detalhada integrada à **Página de Tooltip Flutuante**.
+
+---
+
+### 🔍 Página Oculta: Tooltip Customizado de Ativo (`Tooltip_Ativo`)
+* **Proposta:** Exibir radiografia imediata de um equipamento ao passar o mouse sobre a Matriz da Página 4.
+* **Componentes:** Fundo SVG escuro com cantos arredondados, identificador visual de **Categoria/Modelo do Equipamento**, mini cards HTML de MTTR e Custo Acumulado, e gráfico de barras com o histórico mensal de chamados daquele ativo específico.
+
+---
+
+## 📈 Ganhos Esperados & Evolução em Indicadores
+
+A implementação desta Control Tower reformula a cultura de acompanhamento de manutenção da organização:
+
+| Indicador | Abordagem Tradicional | Evolução com o Dashboard |
+| :--- | :--- | :--- |
+| **SLA de Manutenção** | Acompanhamento reativo em tabelas estáticas. | Monitoramento dinâmico com alerta visual imediato por faixa de meta (Gauge e Badges). |
+| **MTTR (Tempo de Reparo)** | Calculado de forma isolada sem contexto de ativo. | Integrado com histórico individualizado via Tooltip customizado. |
+| **Gestão de Custos (OPEX)** | Análise mensal em planilhas financeiras desconectadas. | **Curva S Físico-Financeira** em tempo real permitindo projeção de teto orçamentário. |
+| **Diagnóstico de Gargalos** | Dificuldade em identificar reincidência de falhas. | Rastreabilidade imediata de ativos críticos fora da meta. |
+
+---
+
+> 💡 *A documentação técnica detalhada cobrindo modelagem de dados, arquitetura DAX, especificação JSON do Deneb e versionamento no Git está disponível no arquivo [TECHNICAL_DOC.md](./TECHNICAL_DOC.md).*
