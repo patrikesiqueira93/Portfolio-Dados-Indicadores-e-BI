@@ -1,63 +1,101 @@
-🛠️ Documentação Técnica & Arquitetura de Dados | Control Tower DE&BI💻 
+# 🛠️ Documentação Técnica & Arquitetura de Dados | Control Tower DE&BI
 
-Visão Geral Técnica:
-Esta documentação detalha os aspectos de Engenharia de Dados, Modelagem Dimensional, Linguagem DAX, Especificações JSON/Vega-Lite e UI/UX Avançado aplicados no desenvolvimento do dashboard executivo Control Tower de Manutenção & SLA.
-🤖 Engenharia de Prompts & Co-Criação com Inteligência ArtificialUm dos pilares tecnológicos e metodológicos deste projeto foi a aplicação estratégica de Engenharia de Prompts e Assistência por Inteligência Artificial (Gemini AI) para aceleração do ciclo de desenvolvimento de software e BI.
-+-----------------------------------------------------------------------------------+
-|                        FLUXO DE CO-CRIAÇÃO COM IA (GEMINI)                        |
-+-------------------+--------------------+--------------------+---------------------+
-| 1. CONCEITO UI    | 2. ASSETS SVG      | 3. DAX & HTML      | 4. DENEB / VEGA     |
-| UX Layout 16:9    | Backgrounds &      | Medidas HTML com   | Gauge Analógico com |
-| & Paleta Dark     | Watermarks Vector  | CSS Inline & Badges| Camadas & Trig.     |
-+-------------------+--------------------+--------------------+---------------------+
+Visão Geral Técnica: Esta documentação detalha os aspectos de Engenharia de Dados, Modelagem Dimensional, Linguagem DAX, Especificações JSON/Vega-Lite e UI/UX Avançado aplicados no desenvolvimento do dashboard executivo Control Tower de Manutenção & SLA.
 
-Contexto de Origem & Incentivo Acadêmico:UNIVESP (4º Semestre de Engenharia da Computação): Projeto desenvolvido como aplicação prática das disciplinas de Banco de Dados, Engenharia de Software e Interface Homem-Computador (IHC).Educathon Eldorado + IBM: Metodologia de construção de prompts estruturados baseada nos aprendizados da parceria entre o Instituto de Pesquisas Eldorado e o curso de Prompt Engineering da IBM, focando em:Decomposição modular de problemas complexos.Refatoração iterativa de código.Validação rigorosa de sintaxe e performance.Google Gemini AI como Co-Piloto:Criação e Refinamento de Código: Geração de fórmulas DAX complexas com tratamento de aspas para renderização HTML/CSS em tempo de execução.Desenvolvimento Declarativo JSON: Cálculo e ajuste de camadas trigonométricas (theta, arc, radianos) para o Gauge Analógico em Deneb/Vega-Lite.Design Visual & UI Assets: Concepção da paleta de cores executiva (#0F172A, #2563EB, #10B981, #EF4444) e estrutura dos arquivos SVG de tela de fundo e tooltip.🏗️ 1. Arquitetura da Solução & Pipeline de DadosO pipeline de dados segue os princípios da Arquitetura Medallion, garantindo rastreabilidade, imutabilidade da fonte e alta performance no consumo analítico:[ Fontes Brutas / CSVs ] 
+---
 
-┌──────────────────────────┐
-│   Camada BRONZE (Raw)    │ ──> Ingestão em arquivos Parquet preservando schema original.
-└──────────────────────────┘
+## 🤖 Engenharia de Prompts & Co-Criação com Inteligência Artificial
+
+Um dos pilares tecnológicos e metodológicos deste projeto foi a aplicação estratégica de Engenharia de Prompts e Assistência por Inteligência Artificial (**Google Gemini AI**) para aceleração do ciclo de desenvolvimento de software e BI.
+
+```text
++-------------------------------------------------------------------------------+
+|                        FLUXO DE CO-CRIAÇÃO COM IA (GEMINI)                    |
++-------------------+-------------------+-------------------+-------------------+
+| 1. CONCEITO UI    | 2. ASSETS SVG     | 3. DAX & HTML     | 4. DENEB / VEGA   |
+| UX Layout 16:9    | Backgrounds &     | Medidas HTML com  | Gauge Analógico   |
+| Paleta Dark       | Watermarks Vector | CSS Inline &      | Camadas & Trig.   |
+| Slate & Blue      | para Tooltip      | Badges Dinâmicos  | para Ponteiro     |
++-------------------+-------------------+-------------------+-------------------+
+
+Contexto de Origem & Incentivo Acadêmico:
+UNIVESP (4º Semestre de Engenharia da Computação): Projeto desenvolvido como aplicação prática das disciplinas de Banco de Dados, Engenharia de Software e Interface Homem-Computador (IHC).
+
+Educathon Eldorado + IBM: Metodologia de construção de prompts estruturados baseada nos aprendizados da parceria entre o Instituto de Pesquisas Eldorado e o curso de Prompt Engineering da IBM, focando em:
+
+Decomposição modular de problemas complexos.
+
+Refatoração iterativa de código.
+
+Validação rigorosa de sintaxe e performance.
+
+Google Gemini AI como Co-Piloto Tecnológico:
+Criação e Refinamento de Código: Geração de fórmulas DAX complexas com tratamento rigoroso de aspas para renderização HTML/CSS em tempo de execução no Power BI.
+
+Desenvolvimento Declarativo JSON: Cálculo e ajuste de camadas trigonométricas (theta, arc, radianos) para o Gauge Analógico em Deneb/Vega-Lite.
+
+Design Visual & UI Assets: Concepção da paleta de cores executiva (#0F172A, #2563EB, #10B981, #EF4444) e estruturação visual dos arquivos SVG de tela de fundo e tooltip flutuante.
+
+🏗️ 1. Arquitetura da Solução & Pipeline de Dados
+O pipeline de dados segue os princípios da Arquitetura Medallion, garantindo rastreabilidade, imutabilidade da fonte e alta performance no consumo analítico:
+
+[ Fontes Brutas / CSVs ]
           │
           ▼
-┌──────────────────────────┐
-│  Camada SILVER (Cleansed)│ ──> Tratamento de nulos, tipagem rígida, cálculo de tempos em
-└──────────────────────────┘     horas operacionais e marcação de flags de SLA.
-          │
-          ▼
-┌──────────────────────────┐
-│   Camada GOLD (Star)     │ ──> Modelagem dimensional pronta para consumo em alta velocidade.
-└──────────────────────────┘
-          │
-          ▼
-┌──────────────────────────┐
-│  Power BI (Control Tower)│ ──> Camada de visualização executiva e inteligência de negócios.
-└──────────────────────────┘
+┌───────────────────────────┐
+│   Camada BRONZE (Raw)     │ ──► Ingestão preservando schema original.
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│   Camada SILVER (Cleaned) │ ──► Tratamento de nulos, tipagem rígida,
+└─────────────┬─────────────┘     cálculo de tempos e flags de SLA.
+              │
+              ▼
+┌───────────────────────────┐
+│   Camada GOLD (Star)      │ ──► Modelagem dimensional otimizada
+└─────────────┬─────────────┘     pronta para consumo analítico.
+              │
+              ▼
+┌───────────────────────────┐
+│ Power BI (Control Tower)  │
+└───────────────────────────┘
 
-📐 2. Modelagem de Dados (Star Schema)A camada analítica foi estruturada no modelo Esquema Estrela (Star Schema) com relacionamentos $1:N$ unidirecionais e cardinalidade controlada:                   ┌───────────────────────┐
-│     dim_tempo         │
-└───────────────────────┘
-          │ 1
-          │
-          │ N
-┌───────────────────────┐  N ┌───────────────────────┐
-│   dim_equipamento     │───>│    fato_chamados      │
-└───────────────────────┘    └───────────────────────┘
-           │
-           │
-           ▼
-┌───────────────────────┐
-│       _Medidas        │ (Tabela Técnica / Repositório DAX)
-└───────────────────────┘
+📐 2. Modelagem Dimensional (Esquema Estrela / Star Schema)
+A modelagem de dados foi estruturada rigorosamente no padrão Star Schema (Fato e Dimensões):
 
-Detalhes do Dicionário de Dados:fato_chamados (Fato): Registra eventos de ordens de manutenção, contendo id_chamado, id_ativo, dt_abertura, dt_fechamento, tempo_atendimento_horas, custo_manutencao e fl_estourou_sla (0 ou 1).dim_equipamento (Dimensão): Atributos dos ativos (id_ativo, categoria_equipamento, filial_operacao, modelo, ano_fabricacao).dim_tempo (Dimensão): Calendário contínuo em PT-BR para análises temporais por Mês, Trimestre, Ano e Dia da Semana._Medidas (Repositório): Tabela exclusiva para centralização e organização das regras de negócio em DAX.📊 3. Principais Formulações DAXAs métricas do projeto combinam cálculos estatísticos operacionais, acúmulos físico-financeiros e formatação dinâmica em HTML.3.1. Métricas Principais de NegócioTotal de Chamados:Total Chamados = COUNTROWS(fato_chamados)
+fato_manutencao: Tabela Fato contendo os registros de ordens de serviço (OS), datas de abertura e fechamento, custos e status.
 
-Custo Total de Manutenção (OPEX):Custo Manutencao = SUM(fato_chamados[custo_manutencao])
-Mean Time to Repair (MTTR em Horas):MTTR Horas = AVERAGE(fato_chamados[tempo_atendimento_horas])
-Percentual de Cumprimento de SLA:% Cumprimento SLA = 
-VAR _Total = [Total Chamados]
-VAR _Atrasos = CALCULATE(COUNTROWS(fato_chamados), fato_chamados[fl_estourou_sla] = 1)
-RETURN
-DIVIDE(_Total - _Atrasos, _Total, 0)
-Custo Acumulado (Curva S):Custo_Acumulado = 
+dim_equipamento: Tabela Dimensão contendo a hierarquia de ativos (id_ativo, categoria_equipamento, filial_operacao).
+
+dim_tempo: Tabela Dimensão Calendário para inteligência temporal contínua (dt_abertura_chamado, Ano, Mês/Ano).
+
+┌─────────────────────────┐
+│     dim_equipamento     │
+├─────────────────────────┤
+│ id_ativo (PK)           │
+│ categoria_equipamento   │
+│ filial_operacao         │
+└────────────┬────────────┘
+             │ 1
+             │
+             │ N
+┌────────────┴────────────┐         ┌─────────────────────────┐
+│     fato_manutencao     │ N     1 │        dim_tempo        │
+├─────────────────────────┼─────────┤─────────────────────────┤
+│ id_chamado (PK)         │         │ dt_abertura_chamado(PK) │
+│ id_ativo (FK)           │         │ Ano                     │
+│ dt_abertura (FK)        │         │ Mes_Nome                │
+│ tempo_atendimento_horas │         │ Mes_Ano                 │
+│ custo_manutencao        │         └─────────────────────────┘
+└─────────────────────────┘
+
+🧮 3. Engenharia de Métricas DAX & Renderização HTML
+Abaixo estão os códigos DAX centrais da aplicação, cobrindo calculabilidade temporal, acumulados e visuais dinâmicos em HTML:
+
+A. Acumulado Físico-Financeiro (Curva S)
+
+Custo_Acumulado = 
 CALCULATE(
     [Custo Manutencao],
     FILTER(
@@ -65,7 +103,10 @@ CALCULATE(
         dim_tempo[dt_abertura_chamado] <= MAX(dim_tempo[dt_abertura_chamado])
     )
 )
-Ativos Críticos Fora da Meta:Ativos_Criticos = 
+
+B. Contagem de Ativos Críticos (SLA < 80%)
+
+Ativos_Criticos = 
 CALCULATE(
     DISTINCTCOUNT(dim_equipamento[id_ativo]),
     FILTER(
@@ -73,7 +114,10 @@ CALCULATE(
         [% Cumprimento SLA] < 0.80
     )
 )
-3.2. Medidas HTML/CSS para Cards CustomizadosPara renderização via suplemento HTML Content, construímos componentes visuais nativos com CSS Inline, evitando dependências externas:Card_HTML_AtivosCriticos = 
+
+C. Card HTML Padronizado para Sidebar (Card_HTML_AtivosCriticos)
+
+Card_HTML_AtivosCriticos = 
 VAR ValorCriticos = FORMAT([Ativos_Criticos], "#,##0") & " equip."
 VAR CorBadge = "#EF4444"
 VAR FundoBadge = "#EF44441A"
@@ -99,8 +143,12 @@ RETURN
     </div>
 </div>
 "
-🎨 4. Visual Declarativo Deneb / Vega-Lite (Gauge Analógico)O indicador da Disponibilidade da Frota (%) foi construído do zero via especificação Vega-Lite v5 no visual Deneb, simulando um manômetro industrial avançado.Destaques da Implementação JSON:Varredura Angular de $240^\circ$: Conversão de percentuais em radianos (início em -2.0944 rad e término em 2.0944 rad).Gradiente Tricolor de Progresso: Escala dinâmica variando de Vermelho (#EF4444) $\rightarrow$ Amarelo (#F59E0B) $\rightarrow$ Verde (#10B981).Ponteiro de Precisão Trigonômico: Projeção via vetores sin/cos com controle de eixo ("axis": null) para eliminar grids indesejadas.{
-  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+🎨 4. Especificação Declarativa do Gauge Analógico em Deneb (Vega-Lite)
+Código JSON completo utilizado no suplemento Deneb para construção do manômetro analógico com gradiente tricolor dinâmico e agulha angular:
+
+{
+  "$schema": "[https://vega.github.io/schema/vega-lite/v5.json](https://vega.github.io/schema/vega-lite/v5.json)",
   "data": {"name": "dataset"},
   "layer": [
     {
@@ -154,6 +202,41 @@ RETURN
       }
     },
     {
+      "name": "PONTEIRO_AGULHA",
+      "transform": [
+        {
+          "calculate": "-2.0944 + (datum['% Cumprimento SLA'] * 4.1888)",
+          "as": "ang"
+        },
+        {
+          "calculate": "87 * cos(datum['ang'] - 1.5708)",
+          "as": "x2"
+        }
+      ],
+      "mark": {
+        "type": "rule",
+        "stroke": "#0F172A",
+        "strokeWidth": 4,
+        "strokeCap": "round"
+      },
+      "encoding": {
+        "x": {
+          "field": "x2",
+          "type": "quantitative",
+          "scale": {"domain": [-165, 165]},
+          "axis": null
+        },
+        "y": {
+          "field": "y2",
+          "type": "quantitative",
+          "scale": {"domain": [-165, 165]},
+          "axis": null
+        },
+        "x2": {"field": "x1"},
+        "y2": {"field": "y1"}
+      }
+    },
+    {
       "name": "NUCLEO_CENTRAL_ESCURO",
       "mark": {
         "type": "arc",
@@ -179,20 +262,86 @@ RETURN
           "format": ".1%"
         }
       }
+    },
+    {
+      "name": "ROTULO_DE_META",
+      "mark": {
+        "type": "text",
+        "text": "META: 80.0%",
+        "font": "Segoe UI",
+        "fontSize": 18,
+        "fontWeight": "bold",
+        "color": "#64748B",
+        "dy": 105
+      }
     }
   ]
 }
-          
-🔄 5. Fluxo de Versionamento & Governança no GitO desenvolvimento seguiu o fluxo de trabalho Git Feature Branch com padronização de commits (Conventional Commits):# 1. Rastreio de alterações locais
-git status
 
-# 2. Inclusão dos arquivos salvos no Staging Area
+🛠️ 5. Versionamento e Governança de Código com Git / GitHub
+A governança do projeto segue o fluxo de trabalho estruturado por commits semânticos (Conventional Commits):
+
+feat: Implementação de novas funcionalidades (telas, medidas DAX, visuais).
+
+style: Ajustes de UI/UX, bordas, cores e tipografia.
+
+fix: Correção de erros de sintaxe e aspas.
+
+Comandos de Sincronização Final:
+
 git add .
-
-# 3. Commit semântico estruturado
-git commit -m "feat(final): conclui dashboard executivo de manutencao e SLA com 4 paginas e tooltips customizados"
-
-# 4. Sincronização com o repositório remoto no GitHub
+git commit -m "docs: atualiza documentacao tecnica com fluxo de IA, star schema e json do deneb"
 git push origin main
 
-🏆 Conclusão: A combinação de Engenharia de Dados estruturada em Star Schema, medidas analíticas em DAX, componentes HTML/CSS e especificação gráfica avançada em Deneb resultou em uma solução completa de nível industrial, demonstrando autonomia técnica e alinhamento com as melhores práticas do mercado corporativo.
+---
+
+<Steps>
+  <Step subtitle="Passo 1" title="Substituir o Conteúdo no VS Code">
+    1. Abra o arquivo **`README.md`** no seu VS Code.
+    2. Selecione todo o conteúdo existente (`Ctrl + A`) e apague.
+    3. Cole todo o bloco de código acima.
+    4. Salve o arquivo (`Ctrl + S`).
+  </Step>
+
+  <Step subtitle="Passo 2" title="Commit e Push no GitHub">
+    Abra o terminal do VS Code e envie a documentação atualizada e perfeitamente formatada:
+    
+    ```bash
+    git add .
+    ```
+    ```bash
+    git commit -m "docs: corrige formatacao de marcacao e blocos de texto no README"
+    ```
+    ```bash
+    git push origin main
+    ```
+  </Step>
+</Steps>
+
+---
+
+## 🏁 Conclusão & Impacto Gerencial
+
+A construção da **Control Tower de Manutenção & SLA** comprova a viabilidade e o alto valor agregado de integrar **Engenharia de Dados**, **Modelagem Dimensional em Star Schema**, **Design de Interface Corporativo (UI/UX)** e **Inteligência Artificial Generativa** no ciclo de vida de soluções analíticas.
+
+### Principais Legados do Projeto:
+
+1. **Tomada de Decisão Baseada em Dados (Data-Driven):** Redução drástica do tempo de identificação de gargalos de atendimento e desvios operacionais através da centralização de KPIs em 4 visuais altamente focados.
+2. **Prevenção de Estouro Orçamentário:** Adoção da **Curva S Físico-Financeira**, permitindo que gestores identifiquem a taxa de consumo do OPEX de manutenção mês a mês de forma preditiva.
+3. **Visibilidade em Nível de Ativo:** Integração da **Página Oculta de Tooltip**, fornecendo uma radiografia instantânea de qualquer equipamento crítico sem poluir o canvas principal ou exigir múltiplos cliques do executivo.
+4. **Governança & Reprodutibilidade:** Versionamento rigoroso em Git/GitHub, garantindo rastreabilidade histórica de cada melhoria de código, fórmula DAX e especificação JSON desenvolvida.
+
+---
+
+## 👨‍💻 Autor & Contexto Profissional
+
+**Patrik Ernandes Siqueira**  
+*Estudante de Engenharia da Computação (UNIVESP) & Analista de Dados / Suporte Operacional em análise de dados na Petrobras (Bacia de Campos).*
+
+* **LinkedIn:** [Acessar Perfil Professional]([https://linkedin.com](https://www.linkedin.com/in/patrik-e-siqueira/))
+* **GitHub:** [Acessar Repositório do Projeto](https://github.com/patrikesiqueira93)
+* **Email:** [Contato Profissional](mailto:patrikesiqueira@gmail.com)
+
+---
+
+> 💡 *Projeto desenvolvido como estudo prático avançado e portfólio de engenharia analytics, aplicando as melhores práticas de mercado e co-criação com inteligência artificial.*
